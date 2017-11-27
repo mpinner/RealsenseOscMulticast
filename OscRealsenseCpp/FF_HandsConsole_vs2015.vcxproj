@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>OscRealsenseCpp</ProjectName>
+    <ProjectName>RealsenseOscMulticast</ProjectName>
     <RootNamespace>FF_HandsConsole</RootNamespace>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{1115AC67-C525-4995-BDEF-2D19B214F34A}</ProjectGuid>
