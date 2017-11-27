@@ -11,7 +11,7 @@ namespace extOSC.Components.Informers
 
         protected override void FillMessage(OSCMessage message, bool value)
         {
-            message.AddValue(OSCValue.Bool(value));
+            message.AddValue(OSCValue.Int((int)Time.realtimeSinceStartup));
         }
 
         #endregion
