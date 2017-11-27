@@ -1,0 +1,24 @@
+/* Copyright (c) 2017 ExT (V.Sigalkin) */
+
+namespace extOSC.Core.Console
+{
+    public enum OSCConsolePacketType
+    {
+        Received,
+
+        Transmitted
+    }
+
+    public class OSCConsolePacket
+    {
+        #region Public Vars
+
+        public OSCPacket Packet;
+
+        public OSCConsolePacketType PacketType;
+
+        public string Info;
+
+        #endregion
+    }
+}
