@@ -1,0 +1,37 @@
+﻿  Building Custom Rule D:/oscpack/CMakeLists.txt
+  CMake does not need to re-run because D:/oscpack/build/CMakeFiles/generate.stamp is up-to-date.
+  IpEndpointName.cpp
+D:\oscpack\ip\IpEndpointName.cpp(53): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.15063.0\ucrt\stdio.h(1772): note: see declaration of 'sprintf'
+D:\oscpack\ip\IpEndpointName.cpp(55): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.15063.0\ucrt\stdio.h(1772): note: see declaration of 'sprintf'
+D:\oscpack\ip\IpEndpointName.cpp(68): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.15063.0\ucrt\stdio.h(1772): note: see declaration of 'sprintf'
+D:\oscpack\ip\IpEndpointName.cpp(70): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.15063.0\ucrt\stdio.h(1772): note: see declaration of 'sprintf'
+D:\oscpack\ip\IpEndpointName.cpp(78): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.15063.0\ucrt\stdio.h(1772): note: see declaration of 'sprintf'
+D:\oscpack\ip\IpEndpointName.cpp(80): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.15063.0\ucrt\stdio.h(1772): note: see declaration of 'sprintf'
+  NetworkingUtils.cpp
+D:\oscpack\ip\win32\NetworkingUtils.cpp(87): warning C4996: 'gethostbyname': Use getaddrinfo() or GetAddrInfoW() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.15063.0\um\winsock2.h(2218): note: see declaration of 'gethostbyname'
+  UdpSocket.cpp
+D:\oscpack\ip\win32\UdpSocket.cpp(438): warning C4456: declaration of 'currentTimeMs' hides previous local declaration
+  D:\oscpack\ip\win32\UdpSocket.cpp(423): note: see declaration of 'currentTimeMs'
+  OscTypes.cpp
+  OscReceivedElements.cpp
+  OscPrintReceivedElements.cpp
+D:\oscpack\osc\OscPrintReceivedElements.cpp(129): warning C4996: 'ctime': This function or variable may be unsafe. Consider using ctime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.15063.0\ucrt\time.h(475): note: see declaration of 'ctime'
+D:\oscpack\osc\OscPrintReceivedElements.cpp(228): warning C4457: declaration of 'b' hides function parameter
+  D:\oscpack\osc\OscPrintReceivedElements.cpp(210): note: see declaration of 'b'
+  OscOutboundPacketStream.cpp
+D:\oscpack\osc\OscOutboundPacketStream.cpp(363): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.15063.0\ucrt\string.h(136): note: see declaration of 'strcpy'
+D:\oscpack\osc\OscOutboundPacketStream.cpp(605): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.15063.0\ucrt\string.h(136): note: see declaration of 'strcpy'
+D:\oscpack\osc\OscOutboundPacketStream.cpp(625): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.15063.0\ucrt\string.h(136): note: see declaration of 'strcpy'
+  Generating Code...
+  oscpack.vcxproj -> D:\oscpack\build\Release\oscpack.lib

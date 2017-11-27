@@ -1,0 +1,10 @@
+﻿  Building Custom Rule D:/oscpack/CMakeLists.txt
+  CMake does not need to re-run because D:/oscpack/msvs2015-project/CMakeFiles/generate.stamp is up-to-date.
+  OscUnitTests.cpp
+D:\oscpack\tests\OscUnitTests.cpp(109): warning C4311: 'type cast': pointer truncation from 'char *' to 'long'
+D:\oscpack\tests\OscUnitTests.cpp(109): warning C4302: 'type cast': truncation from 'char *' to 'long'
+D:\oscpack\tests\OscUnitTests.cpp(109): warning C4312: 'type cast': conversion from 'long' to 'char *' of greater size
+D:\oscpack\tests\OscUnitTests.cpp(150): warning C4456: declaration of 'n' hides previous local declaration
+  D:\oscpack\tests\OscUnitTests.cpp(142): note: see declaration of 'n'
+  OscUnitTests.vcxproj -> D:\oscpack\msvs2015-project\Debug\OscUnitTests.exe
+  OscUnitTests.vcxproj -> D:/oscpack/msvs2015-project/Debug/OscUnitTests.pdb (Full PDB)

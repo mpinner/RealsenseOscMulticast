@@ -1,0 +1,4 @@
+﻿  Building Custom Rule D:/oscpack/CMakeLists.txt
+  CMake does not need to re-run because D:/oscpack/build/CMakeFiles/generate.stamp is up-to-date.
+  OscDump.cpp
+  OscDump.vcxproj -> D:\oscpack\build\Release\OscDump.exe

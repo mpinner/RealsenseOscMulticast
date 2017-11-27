@@ -1,0 +1,5 @@
+﻿  Building Custom Rule D:/oscpack/CMakeLists.txt
+  CMake does not need to re-run because D:/oscpack/msvs2015-project/CMakeFiles/generate.stamp is up-to-date.
+  SimpleSend.cpp
+  SimpleSend.vcxproj -> D:\oscpack\msvs2015-project\Debug\SimpleSend.exe
+  SimpleSend.vcxproj -> D:/oscpack/msvs2015-project/Debug/SimpleSend.pdb (Full PDB)

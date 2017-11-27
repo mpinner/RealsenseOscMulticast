@@ -1,0 +1,9 @@
+D:/oscpack/msvs2015-project/CMakeFiles/oscpack.dir
+D:/oscpack/msvs2015-project/CMakeFiles/OscSendTests.dir
+D:/oscpack/msvs2015-project/CMakeFiles/OscUnitTests.dir
+D:/oscpack/msvs2015-project/CMakeFiles/SimpleSend.dir
+D:/oscpack/msvs2015-project/CMakeFiles/OscReceiveTest.dir
+D:/oscpack/msvs2015-project/CMakeFiles/OscDump.dir
+D:/oscpack/msvs2015-project/CMakeFiles/SimpleReceive.dir
+D:/oscpack/msvs2015-project/CMakeFiles/ALL_BUILD.dir
+D:/oscpack/msvs2015-project/CMakeFiles/ZERO_CHECK.dir
