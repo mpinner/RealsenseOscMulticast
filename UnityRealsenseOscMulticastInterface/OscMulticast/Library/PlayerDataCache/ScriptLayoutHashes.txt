@@ -208,3 +208,5 @@ dda458fed9e8d4c2e92176e99e5151f8 Assembly-CSharp.dll:extOSC.Components.Informers
 21236be4d8cb1d7626dcf695dfe8e540 Assembly-CSharp.dll:extOSC.Examples.MatchPatternExample
 4046f1d0c2187898d782119897e361df Assembly-CSharp.dll:extOSC.Components.ReceiverReflections.OSCReceiverReflectionColor
 141bb814097033f38760274b227fd49c Assembly-CSharp.dll:extOSC.Examples.ArrayExample
+dda458fed9e8d4c2e92176e99e5151f8 Assembly-CSharp.dll:extOSC.Components.Informers.OSCRealsenseLeftInformer
+dda458fed9e8d4c2e92176e99e5151f8 Assembly-CSharp.dll:extOSC.Components.Informers.OSCRealsenseRightInformer
