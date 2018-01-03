@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/realsense.unity
+- path: Assets/Scenes/firefly.unity
   isLoaded: 1
   isActive: 1
