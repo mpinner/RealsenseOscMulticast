@@ -21,6 +21,7 @@
 
 #include "osc/OscOutboundPacketStream.h"
 #include "ip/UdpSocket.h"
+#include "osc_messages.h"
 
 using namespace std;
 const int OUTPUT_BUFFER_SIZE = 2048;
@@ -31,6 +32,7 @@ bool g_gestures = true;	// Writing gesture data to console output
 bool g_alerts = false;	// Writing alerts data to console output
 bool g_stop = false;	// user closes application
 bool g_cursor = true;	// Enable Cursor tracking mode
+bool g_skeleton = false; // Enable Full hand tracking mode
 bool g_Info = true;	// Enable Cursor / Skeleton Information
 bool g_timer = true;    // Enable FPS output
 bool g_heartbeat = true;    // Enable heartbeat output
@@ -70,9 +72,9 @@ BOOL CtrlHandler(DWORD fdwCtrlType)
 void main(int argc, const char* argv[])
 {
 
-	if ((argc != 1) && (argc != 4))
+	if ((argc != 1) && (argc != 4) && (argc != 5))
 	{
-		std::cout << "usage: UdpClient <camera ID> <IP> <Port>" << std::endl;
+		std::cout << "usage: UdpClient <camera ID> <IP> <Port> [-bends]" << std::endl;
 		exit(1);
 	}
 
@@ -85,32 +87,31 @@ void main(int argc, const char* argv[])
 		strcpy_s(IP, 14, "239.255.0.85");
 		Port = 10085;
 	}
-	else
+	else 
 	{
 		size_t charsConverted = 0;
 		strcpy(camID, argv[1]);
 		strcpy(IP, argv[2]);
 		Port = atoi(argv[3]);
 	}
+	if (argc == 5) {
+		if (strcmp(argv[4], "-bends") == 0)
+		{
+			//++moduleCount;
+			g_skeleton = true;
+			g_cursor = false;
+		}
+	}
 
 	std::cout << "Running cam:" << camID << " ip:" << IP << " port:" << Port << endl;
 
 	UdpTransmitSocket transmitSocket(IpEndpointName(IP, Port));
 	char buffer[OUTPUT_BUFFER_SIZE];
-	osc::OutboundPacketStream p(buffer, OUTPUT_BUFFER_SIZE);
+	osc::OutboundPacketStream packetStream(buffer, OUTPUT_BUFFER_SIZE);
 
-	char heartBeatAddress[80];
-	strcpy_s(heartBeatAddress, "/cursor/");
-	strcat_s(heartBeatAddress, camID);
-	strcat_s(heartBeatAddress, "/heartbeat");
-	p.Clear();
-	p << osc::BeginBundleImmediate
-		<< osc::BeginMessage(heartBeatAddress)
-		<< 0
-		<< osc::EndMessage
-		<< osc::EndBundle;
+	osc_messages osc(camID, transmitSocket, packetStream);
+	osc.sendHeartbeat(0);
 
-	transmitSocket.Send(p.Data(), p.Size());
 
 	// Measuring FPS
 	FPSTimer timer;
@@ -131,6 +132,67 @@ void main(int argc, const char* argv[])
 		releaseAll();
 		std::printf("Failed Creating PXCSenseManager\n");
 		return;
+	}
+
+	if (g_skeleton)
+	{
+		if (g_cursor)
+		{
+			std::printf("Cannot enable both cursor and skeleton\n");
+			return;
+		}
+
+		if (g_senseManager->EnableHand(0) != PXC_STATUS_NO_ERROR)
+		{
+			releaseAll();
+			std::printf("Failed Enabling Hand Module\n");
+			return;
+		}
+
+		g_handModule = g_senseManager->QueryHand();
+		if (!g_handModule)
+		{
+			releaseAll();
+			std::printf("Failed Creating PXCHandModule\n");
+			return;
+		}
+
+
+
+		g_handDataOutput = g_handModule->CreateOutput();
+		if (!g_handDataOutput)
+		{
+			releaseAll();
+			std::printf("Failed Creating PXCHandData\n");
+			return;
+		}
+
+		g_handConfiguration = g_handModule->CreateActiveConfiguration();
+		if (!g_handConfiguration)
+		{
+			releaseAll();
+			std::printf("Failed Creating PXCHandConfiguration\n");
+			return;
+		}
+
+		g_handConfiguration->SetTrackingMode(PXCHandData::TRACKING_MODE_FULL_HAND);
+
+		if (g_gestures)
+		{
+			std::printf("-Gestures Are Enabled-\n");
+			g_handConfiguration->EnableAllGestures();
+		}
+
+		if (g_alerts)
+		{
+			std::printf("-Alerts Are Enabled-\n");
+			g_handConfiguration->EnableAllAlerts();
+		}
+
+		// Apply configuration setup
+		g_handConfiguration->ApplyChanges();
+
+		std::printf("-Skeleton Information Enabled-\n");
 	}
 
 	if (g_cursor)
@@ -199,21 +261,67 @@ void main(int argc, const char* argv[])
 		// Acquiring frames from input device
 		while (g_senseManager->AcquireFrame(true) == PXC_STATUS_NO_ERROR && !g_stop)
 		{
+			// HEARTBEATS
+			osc.checkAndSendHeartbeat();
 
-			double dt = (clock() - t1) / CLOCKS_PER_SEC;
-			if (dt > INTERVAL)
+
+			if (g_skeleton)
 			{
-				t1 = clock();
-				char heartBeatAddress[80];
-				strcpy_s(heartBeatAddress, "/cursor/");
-				strcat_s(heartBeatAddress, camID);
-				strcat_s(heartBeatAddress, "/heartbeat");
-				p.Clear();
-				p << osc::BeginMessage(heartBeatAddress) << (t1 / CLOCKS_PER_SEC) << osc::EndMessage;
-				transmitSocket.Send(p.Data(), p.Size());
-				//std::cout << "h:" << camID << "," << (t1 / CLOCKS_PER_SEC) << endl;
+				// Get current hand outputs
+				if (g_handDataOutput->Update() == PXC_STATUS_NO_ERROR)
+				{
 
+					// Display alerts
+					if (g_alerts)
+					{
+						PXCHandData::AlertData alertData;
+						for (int i = 0; i < g_handDataOutput->QueryFiredAlertsNumber(); ++i)
+						{
+							if (g_handDataOutput->QueryFiredAlertData(i, alertData) == PXC_STATUS_NO_ERROR)
+							{
+								std::printf("%s was fired at frame %d \n", Definitions::AlertToString(alertData.label).c_str(), alertData.frameNumber);
+							}
+						}
+					}
+
+					// Display gestures
+					if (g_gestures)
+					{
+						PXCHandData::GestureData gestureData;
+						for (int i = 0; i < g_handDataOutput->QueryFiredGesturesNumber(); ++i)
+						{
+							if (g_handDataOutput->QueryFiredGestureData(i, gestureData) == PXC_STATUS_NO_ERROR)
+							{
+								std::wprintf(L"%s, Gesture: %s was fired at frame %d \n", Definitions::GestureStateToString(gestureData.state), gestureData.name, gestureData.frameNumber);
+							}
+						}
+					}
+
+					// Display joints
+					if (g_Info)
+					{
+						PXCHandData::IHand *hand;
+						PXCHandData::JointData jointData;
+						for (int i = 0; i < g_handDataOutput->QueryNumberOfHands(); ++i)
+						{
+							g_handDataOutput->QueryHandData(PXCHandData::ACCESS_ORDER_BY_TIME, i, hand);
+							std::string handSide = "Unknown Hand";
+							handSide = hand->QueryBodySide() == PXCHandData::BODY_SIDE_LEFT ? "Left Hand" : "Right Hand";
+
+							std::printf("%s\n==============\n", handSide.c_str());
+							for (int j = 0; j < 22; ++j)
+							{
+								if (hand->QueryTrackedJoint((PXCHandData::JointType)j, jointData) == PXC_STATUS_NO_ERROR)
+								{
+									std::printf("     %s)\tX: %f, Y: %f, Z: %f \n", Definitions::JointToString((PXCHandData::JointType)j).c_str(), jointData.positionWorld.x, jointData.positionWorld.y, jointData.positionWorld.z);
+								}
+							}
+						}
+					}
+				}
 			}
+
+
 
 			if (g_cursor)
 			{
@@ -252,9 +360,9 @@ void main(int argc, const char* argv[])
 									strcpy_s(heartBeatAddress, "/cursor/");
 									strcat_s(heartBeatAddress, camID);
 									strcat_s(heartBeatAddress, "/close");
-									p.Clear();
-									p << osc::BeginMessage(heartBeatAddress) << (t1 / CLOCKS_PER_SEC) << osc::EndMessage;
-									transmitSocket.Send(p.Data(), p.Size());
+									packetStream.Clear();
+									packetStream << osc::BeginMessage(heartBeatAddress) << (t1 / CLOCKS_PER_SEC) << osc::EndMessage;
+									transmitSocket.Send(packetStream.Data(), packetStream.Size());
 								}
 								else if (name == L"CURSOR_HAND_OPENING") {
 									std::wprintf(L"Gesture: %s was fired at frame %d \n", Definitions::GestureTypeToString(gestureData.label), gestureData.frameNumber);
@@ -264,9 +372,9 @@ void main(int argc, const char* argv[])
 									strcpy_s(heartBeatAddress, "/cursor/");
 									strcat_s(heartBeatAddress, camID);
 									strcat_s(heartBeatAddress, "/open");
-									p.Clear();
-									p << osc::BeginMessage(heartBeatAddress) << (t1 / CLOCKS_PER_SEC) << osc::EndMessage;
-									transmitSocket.Send(p.Data(), p.Size());
+									packetStream.Clear();
+									packetStream << osc::BeginMessage(heartBeatAddress) << (t1 / CLOCKS_PER_SEC) << osc::EndMessage;
+									transmitSocket.Send(packetStream.Data(), packetStream.Size());
 								} 
 								
 							}
@@ -299,12 +407,12 @@ void main(int argc, const char* argv[])
 							strcat_s(address, "/");
 							strcat_s(address, oschand.c_str());
 
-							p.Clear();
-							p << osc::BeginMessage(address)
+							packetStream.Clear();
+							packetStream << osc::BeginMessage(address)
 								<< (cursor->QueryCursorWorldPoint().x) << (cursor->QueryCursorWorldPoint().y) << (cursor->QueryCursorWorldPoint().z)
 								<< osc::EndMessage;
 							std::cout << "p:" << camID << "," << (cursor->QueryCursorWorldPoint().x) << "," << (cursor->QueryCursorWorldPoint().y) << "," << (cursor->QueryCursorWorldPoint().z) << endl;
-							transmitSocket.Send(p.Data(), p.Size());
+							transmitSocket.Send(packetStream.Data(), packetStream.Size());
 						}
 					}
 
@@ -369,4 +477,5 @@ void releaseAll()
 		g_session = NULL;
 	}
 }
+
 

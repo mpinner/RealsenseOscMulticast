@@ -232,10 +232,12 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="osc_messages.cpp" />
     <ClCompile Include="timer.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="osc_messages.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="timer.h" />
     <ClInclude Include="Definitions.h" />
