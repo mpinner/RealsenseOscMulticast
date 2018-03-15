@@ -5,6 +5,8 @@
 #include <ctime>
 #include <cstring>
 
+
+
 #include "pxcsensemanager.h"
 #include "pxcmetadata.h"
 #include "service/pxcsessionservice.h"
@@ -47,6 +49,10 @@ PXCHandConfiguration *g_handConfiguration;
 PXCHandCursorModule *g_handCursorModule;
 PXCCursorData *g_cursorDataOutput;
 PXCCursorConfiguration *g_cursorConfiguration;
+
+
+# define M_PIl          3.141592653589793238462643383279502884L /* pi */
+float bend(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3);
 
 void releaseAll();
 
@@ -313,14 +319,99 @@ void main(int argc, const char* argv[])
 							std::string handSide = "Unknown Hand";
 							handSide = hand->QueryBodySide() == PXCHandData::BODY_SIDE_LEFT ? "Left Hand" : "Right Hand";
 
-							std::printf("%s\n==============\n", handSide.c_str());
+							float x1, x2, x3, y1, y2, y3, z1, z2, z3;
+							float x4, y4, z4;
+							float r1, r2, r3;
+							int jointcount = 0;
+
+							//std::printf("%s\n==============\n", handSide.c_str());
 							for (int j = 0; j < 22; ++j)
 							{
+
+							
 								if (hand->QueryTrackedJoint((PXCHandData::JointType)j, jointData) == PXC_STATUS_NO_ERROR)
 								{
-									std::printf("     %s)\tX: %f, Y: %f, Z: %f \n", Definitions::JointToString((PXCHandData::JointType)j).c_str(), jointData.positionWorld.x, jointData.positionWorld.y, jointData.positionWorld.z);
+									//std::printf("     %s)\tX: %f, Y: %f, Z: %f \n", Definitions::JointToString((PXCHandData::JointType)j).c_str(), jointData.positionWorld.x, jointData.positionWorld.y, jointData.positionWorld.z);
+								//	std::printf("     %s)\tX: %f, Y: %f, Z: %f \n", Definitions::JointToString((PXCHandData::JointType)j).c_str(), jointData.positionWorld.x, jointData.positionWorld.y, jointData.positionWorld.z);
+
+									if (PXCHandData::JointType::JOINT_INDEX_TIP == j) {
+										//std::printf("     %s)\tX: %f, Y: %f, Z: %f \n", Definitions::JointToString((PXCHandData::JointType)j).c_str(), jointData.positionWorld.x, jointData.positionWorld.y, jointData.positionWorld.z);
+
+										x1 = jointData.positionWorld.x;
+										y1 = jointData.positionWorld.y;
+										z1 = jointData.positionWorld.z;
+										jointcount++;
+									}
+									if (PXCHandData::JointType::JOINT_INDEX_JT2 == j) {
+										//std::printf("     %s)\tX: %f, Y: %f, Z: %f \n", Definitions::JointToString((PXCHandData::JointType)j).c_str(), jointData.positionWorld.x, jointData.positionWorld.y, jointData.positionWorld.z);
+
+										x2 = jointData.positionWorld.x;
+										y2 = jointData.positionWorld.y;
+										z2 = jointData.positionWorld.z;
+										jointcount++;
+									}
+									if (PXCHandData::JointType::JOINT_INDEX_JT1 == j) {
+										//std::printf("     %s)\tX: %f, Y: %f, Z: %f \n", Definitions::JointToString((PXCHandData::JointType)j).c_str(), jointData.positionWorld.x, jointData.positionWorld.y, jointData.positionWorld.z);
+
+										x3 = jointData.positionWorld.x;
+										y3 = jointData.positionWorld.y;
+										z3 = jointData.positionWorld.z;
+										jointcount++;
+
+									}	
+									if (PXCHandData::JointType::JOINT_INDEX_BASE == j) {
+										//std::printf("     %s)\tX: %f, Y: %f, Z: %f \n", Definitions::JointToString((PXCHandData::JointType)j).c_str(), jointData.positionWorld.x, jointData.positionWorld.y, jointData.positionWorld.z);
+
+										x4 = jointData.positionWorld.x;
+										y4 = jointData.positionWorld.y;
+										z4 = jointData.positionWorld.z;
+										jointcount++;
+
+									}
 								}
+
+		
+
 							}
+
+							PXCHandData::FingerData fingerData;
+
+							int fingers[5];
+
+							for (int f = 0; f < 5; ++f)
+							{
+
+								if (hand->QueryFingerData((PXCHandData::FingerType)f, fingerData) == PXC_STATUS_NO_ERROR) {
+
+									fingers[f] = (100 - fingerData.foldedness) * 30;
+								}
+
+
+							}
+
+							osc.bend("right-hand", fingers[0], fingers[1], fingers[2], fingers[3], fingers[4]);
+
+
+						/*	if (jointcount == 4) {
+
+								//cout << cos;
+
+								float first = bend(x1, y1, z1, x2, y2, z2, x3, y3, z3);
+
+							//	std::printf("%2.4f %2.2f %2.2f %2.2f %2.2f %2.2f %2.2f %2.2f %2.2f %2.2f \n", cos, x1, x2, x3, y1, y2, y3, z1, z2, z3);
+						
+								float second = bend( x2, y2, z2, x3, y3, z3, x4, y4, z4);
+
+								float bend = (first + second) * 2048;
+								if (((int)bend) < 0) bend = 0;
+								
+								std::printf("%2.6f\n", bend);
+								osc.bend("right-hand", 0, (int)bend, 0, 0, 0);
+							}
+
+							*/
+
+
 						}
 					}
 				}
@@ -469,3 +560,12 @@ void releaseAll()
 }
 
 
+float bend(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3) {
+	float dot_product = (x1 - x2)*(x2 - x3) + (y1 - y2)*(y2 - y3) + (z1 - z2)*(z2 - z3);
+	float mod_denom1 = sqrt((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2) + (z1 - z2)*(z1 - z2));
+	float mod_denom2 = sqrt((x2 - x3)*(x2 - x3) + (y2 - y3)*(y2 - y3) + (z2 - z3)*(z2 - z3));
+	float cosnum = (dot_product / ((mod_denom1)*(mod_denom2)));
+//	float cos = acos(cosnum) * 180 / M_PIl;
+	float cos = acos(cosnum);
+	return cos;
+}

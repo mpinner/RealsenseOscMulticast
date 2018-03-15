@@ -67,3 +67,25 @@ void osc_messages::cursor(const char* handedness, float x, float y, float z) {
 	std::cout << "c:" << camID << "," << x << "," << y << "," << z << std::endl;
 
 }
+
+void osc_messages::bend(const char* handedness, int f1, int f2, int f3, int f4, int f5) {
+	char address[80];
+	strcpy_s(address, "/gesture/");
+	strcat_s(address, handedness);
+	strcat_s(address, "/fingers");
+
+	packetStream->Clear();
+	*packetStream << osc::BeginMessage(address)
+		<< "firefly" << f1 << f2 << f3 << f4 << f5
+		<< osc::EndMessage;
+	transmitSocket->Send(packetStream->Data(), packetStream->Size());
+	std::cout << "b:" << "," << f1 << "," << f2 << "," << f3 << "," << f4 << "," << f5 << std::endl;
+
+
+
+}
+
+void osc_messages::bend(const char* handedness, float f1, float f2, float f3, float f4, float f5) {
+	bend(handedness, (int)f1, (int)f2, (int)f3, (int)f4, (int)f5);
+
+}
