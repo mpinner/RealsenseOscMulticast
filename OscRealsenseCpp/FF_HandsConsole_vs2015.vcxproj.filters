@@ -21,6 +21,9 @@
     <ClCompile Include="osc_messages.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="note_matrix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -33,6 +36,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="osc_messages.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="note_matrix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

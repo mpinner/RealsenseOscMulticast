@@ -232,11 +232,13 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="note_matrix.cpp" />
     <ClCompile Include="osc_messages.cpp" />
     <ClCompile Include="timer.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="note_matrix.h" />
     <ClInclude Include="osc_messages.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="timer.h" />

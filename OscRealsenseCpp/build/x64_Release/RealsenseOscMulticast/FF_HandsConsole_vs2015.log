@@ -1,9 +1,12 @@
-﻿  main.cpp
-main.cpp(99): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  C:\Program Files (x86)\Windows Kits\10\Include\10.0.15063.0\ucrt\string.h(136): note: see declaration of 'strcpy'
+﻿  note_matrix.cpp
+  osc_messages.cpp
+  timer.cpp
+  main.cpp
 main.cpp(100): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   C:\Program Files (x86)\Windows Kits\10\Include\10.0.15063.0\ucrt\string.h(136): note: see declaration of 'strcpy'
-main.cpp(316): warning C4101: 'jointData': unreferenced local variable
+main.cpp(101): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.15063.0\ucrt\string.h(136): note: see declaration of 'strcpy'
+  Generating Code...
 LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
   FF_HandsConsole_vs2015.vcxproj -> D:\RealsenseOscMulticast\OscRealsenseCpp\bin/x64/RealsenseOscMulticast.exe
   FF_HandsConsole_vs2015.vcxproj -> bin/x64/RealsenseOscMulticast.pdb (Full PDB)

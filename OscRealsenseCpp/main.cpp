@@ -24,6 +24,7 @@
 #include "osc/OscOutboundPacketStream.h"
 #include "ip/UdpSocket.h"
 #include "osc_messages.h"
+#include "note_matrix.h"
 
 using namespace std;
 const int OUTPUT_BUFFER_SIZE = 2048;
@@ -116,6 +117,8 @@ void main(int argc, const char* argv[])
 	osc::OutboundPacketStream packetStream(buffer, OUTPUT_BUFFER_SIZE);
 
 	osc_messages osc(camID, &transmitSocket, &packetStream);
+	//note_matrix notes(&osc);
+
 	osc.sendHeartbeat(0);
 
 
@@ -337,6 +340,31 @@ void main(int argc, const char* argv[])
 
 							// send finger bend info to multicast group
 							osc.bend(oschand.c_str(), fingers[0], fingers[1], fingers[2], fingers[3], fingers[4]);
+
+							//notes.bendLeft(fingers);
+
+							/*
+							if (hand->QueryBodySide() == PXCHandData::BODY_SIDE_LEFT) {
+								notes.bendLeft(fingers);
+							}
+							else {
+								notes.bendRight(fingers);
+							}
+							*/
+
+
+							if (hand->QueryTrackedJoint(PXCHandData::JointType::JOINT_INDEX_JT1, jointData) == PXC_STATUS_NO_ERROR) {
+
+								oschand = "unknown";
+								oschand = hand->QueryBodySide() == PXCHandData::BODY_SIDE_LEFT ? "left" : "right";
+
+								const char* handedness = oschand.c_str();
+								float x = jointData.positionWorld.x;
+								float y = jointData.positionWorld.y;
+								float z = jointData.positionWorld.z;
+
+								osc.cursor(handedness, x, y, z);
+							}
 
 						}
 					}

@@ -89,3 +89,29 @@ void osc_messages::bend(const char* handedness, float f1, float f2, float f3, fl
 	bend(handedness, (int)f1, (int)f2, (int)f3, (int)f4, (int)f5);
 
 }
+
+
+// /midi/channel <int midi status> <int pitch> <int velocity>
+void osc_messages::midi_note_send(int status, int channel, int pitch, int velocity) {
+	char address[80];
+	snprintf(address, sizeof address, "/midi/%d", channel);
+
+	packetStream->Clear();
+	*packetStream << osc::BeginMessage(address)
+		<< status << pitch << velocity
+		<< osc::EndMessage;
+	transmitSocket->Send(packetStream->Data(), packetStream->Size());
+	std::cout << "n:" << channel << "," << status << "," << pitch << "," << velocity << std::endl;
+
+}
+
+
+void osc_messages::midi_note_off(int channel, int pitch) {
+	midi_note_send(128, channel, pitch, 0);
+}
+
+
+void osc_messages:: midi_note_on(int channel, int pitch, int velocity){
+	midi_note_send(144, channel, pitch, velocity);
+}
+
