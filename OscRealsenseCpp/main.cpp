@@ -55,6 +55,12 @@ PXCCursorConfiguration *g_cursorConfiguration;
 # define M_PIl          3.141592653589793238462643383279502884L /* pi */
 float bend(float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3);
 
+clock_t leftTime, rightTime;
+long bendDuration = CLOCKS_PER_SEC;
+bool leftOut = true;
+bool rightOut = true;
+
+
 void releaseAll();
 
 BOOL CtrlHandler(DWORD fdwCtrlType)
@@ -264,7 +270,6 @@ void main(int argc, const char* argv[])
 	if (g_senseManager->Init() == PXC_STATUS_NO_ERROR)
 	{
 		std::printf("\nPXCSenseManager Initializing OK\n========================\n");
-
 		clock_t t1 = clock();
 
 		// Acquiring frames from input device
@@ -281,6 +286,29 @@ void main(int argc, const char* argv[])
 
 			if (g_skeleton)
 			{
+
+
+				// send bend off if appropriate duration has pasted since last valide send
+				if (!leftOut && (clock() - leftTime) > bendDuration) {
+					leftOut = true;
+					printf("leftOut=%d\n", leftTime);
+					std::string oschand = "left-hand";
+					osc.bend(oschand.c_str(), 1, 1, 1, 1, 1);
+
+
+				}
+
+				if (!rightOut && (clock() - rightTime) > bendDuration) {
+					rightOut = true;
+					printf("rightOut=%d\n", rightTime);
+					std::string oschand = "right-hand";
+					osc.bend(oschand.c_str(), 1, 1, 1, 1, 1);
+
+
+				}
+
+
+
 				// Get current hand outputs
 				if (g_handDataOutput->Update() == PXC_STATUS_NO_ERROR)
 				{
@@ -336,10 +364,23 @@ void main(int argc, const char* argv[])
 
 							std::string oschand = "unknown";
 							oschand = hand->QueryBodySide() == PXCHandData::BODY_SIDE_LEFT ? "left-hand" : "right-hand";
+							if (hand->QueryBodySide() == PXCHandData::BODY_SIDE_LEFT) {
 
+								leftTime = clock();
+								leftOut = false;
+							}
+							else {
+
+								rightTime = clock();
+								rightOut = false;
+							}
 
 							// send finger bend info to multicast group
 							osc.bend(oschand.c_str(), fingers[0], fingers[1], fingers[2], fingers[3], fingers[4]);
+
+							//std::cout << "o:" << leftTime << "," << rightTime << std::endl;
+
+
 
 							//notes.bendLeft(fingers);
 
